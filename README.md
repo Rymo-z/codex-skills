@@ -5,7 +5,7 @@
 ## 包含内容
 
 - [karpathy-guidelines](./karpathy-guidelines)：简单、谨慎、目标驱动的代码工作规范。
-- [personal-workflow](./personal-workflow)：需求分析、技术选型、模块化开发、验证和 Git 交付流程。
+- [personal-workflow](./personal-workflow)：需求分析、技术选型、模块化开发、证据记录、验证和 Git 交付流程。
 - [project-interview-prep](./project-interview-prep)：项目复盘、简历描述和面试准备。
 
 ## 下载和安装

@@ -62,7 +62,21 @@ Implement one independently verifiable module at a time. After a module passes i
 
 Keep changes surgical. Do not refactor unrelated code, comments, formatting, or files. Remove only unused items created by the current change.
 
-## 5. Handle missing prerequisites
+## 5. Capture project evidence and decisions
+
+Record concise evidence while the work is happening so the project can later support accurate retrospectives, resume descriptions, and interview answers. Reuse existing project documentation when available; otherwise keep temporary notes on `D:` unless the user asks to add a project document.
+
+For each meaningful module or technical change, capture only what is useful:
+
+- Project context, goal, and the user's personal responsibility.
+- The selected technology or design, the pain point it addresses, and the main alternatives considered.
+- The original approach, observed limitation, concrete adjustment, and remaining trade-offs.
+- Before/after measurements with test environment, dataset or traffic, sample size, and time window when available.
+- Verification commands, actual results, unresolved risks, and follow-up work.
+
+Separate measured facts, user-provided claims, estimates, and inferences. Never invent missing metrics or inflate individual contributions; mark missing evidence as `未记录` and identify how it can be measured. When an architecture, dependency, API, data, security, or cost decision changes, record the decision and its reason before implementation.
+
+## 6. Handle missing prerequisites
 
 Perform cheap, read-only checks when they can quickly identify the problem. Pause and tell the user before spending substantial time when any of these is missing or unclear:
 
@@ -74,7 +88,7 @@ Perform cheap, read-only checks when they can quickly identify the problem. Paus
 
 When pausing, state what is missing, why it is needed, what has already been checked, and the next action the user can take.
 
-## 6. Git delivery
+## 7. Git delivery
 
 Use a symbolic base branch rather than a repository-specific name:
 
@@ -108,7 +122,7 @@ Before a complete commit and push flow:
 
 Report every conflict file, the reason for the chosen resolution, and any remaining concern.
 
-## 7. Deployment and completion
+## 8. Deployment and completion
 
 Deployment is a separate action. Execute it only when the user explicitly requests it. Before deployment, perform a concise preflight check. If a prerequisite is missing or a high-risk decision is unresolved, pause before deployment.
 
