@@ -30,7 +30,21 @@ Before coding:
 
 After requirements are sufficiently clear, present the implementation order and wait for confirmation of the overall plan before starting medium or complex work. Continue through modules automatically after that confirmation unless a new blocker or material risk appears.
 
-## 3. Select the technical approach
+## 3. Investigation requests
+
+When the user says `排查一下` or asks to investigate a problem without explicitly asking for a fix, perform a read-only investigation first. Do not modify code, configuration, data, dependencies, or external systems.
+
+The investigation should report:
+
+- The observed symptom and scope.
+- The checks performed and their actual evidence.
+- The most likely root cause, separated from unconfirmed hypotheses.
+- One or more feasible solutions, with trade-offs and a recommended next step.
+- Any missing information or user decision required before implementation.
+
+Only make changes after the user explicitly asks to implement, fix, or apply a selected solution. If a read-only check itself would mutate state, pause and ask before running it.
+
+## 4. Select the technical approach
 
 Evaluate solutions in this order:
 
@@ -48,7 +62,7 @@ Search external sources only when the project does not already provide a suitabl
 
 Do not automatically install a missing dependency. First identify the missing item, its impact, and the exact proposed command, then ask the user.
 
-## 4. Implement module by module
+## 5. Implement module by module
 
 For each module, record or communicate:
 
@@ -62,7 +76,7 @@ Implement one independently verifiable module at a time. After a module passes i
 
 Keep changes surgical. Do not refactor unrelated code, comments, formatting, or files. Remove only unused items created by the current change.
 
-## 5. Capture project evidence and decisions
+## 6. Capture project evidence and decisions
 
 Record concise evidence while the work is happening so the project can later support accurate retrospectives, resume descriptions, and interview answers. Reuse existing project documentation when available; otherwise keep temporary notes on `D:` unless the user asks to add a project document.
 
@@ -76,7 +90,7 @@ For each meaningful module or technical change, capture only what is useful:
 
 Separate measured facts, user-provided claims, estimates, and inferences. Never invent missing metrics or inflate individual contributions; mark missing evidence as `未记录` and identify how it can be measured. When an architecture, dependency, API, data, security, or cost decision changes, record the decision and its reason before implementation.
 
-## 6. Handle missing prerequisites
+## 7. Handle missing prerequisites
 
 Perform cheap, read-only checks when they can quickly identify the problem. Pause and tell the user before spending substantial time when any of these is missing or unclear:
 
@@ -88,7 +102,7 @@ Perform cheap, read-only checks when they can quickly identify the problem. Paus
 
 When pausing, state what is missing, why it is needed, what has already been checked, and the next action the user can take.
 
-## 7. Git delivery
+## 8. Git delivery
 
 Use a symbolic base branch rather than a repository-specific name:
 
@@ -122,7 +136,7 @@ Before a complete commit and push flow:
 
 Report every conflict file, the reason for the chosen resolution, and any remaining concern.
 
-## 8. Deployment and completion
+## 9. Deployment and completion
 
 Deployment is a separate action. Execute it only when the user explicitly requests it. Before deployment, perform a concise preflight check. If a prerequisite is missing or a high-risk decision is unresolved, pause before deployment.
 
