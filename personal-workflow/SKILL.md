@@ -1,6 +1,6 @@
 ---
 name: personal-workflow
-description: Analyze requirements and propose changes for the user's development workflow; obtain confirmation before every code modification phase, including small fixes. Use when investigating, writing, reviewing, testing, committing, pushing, or deploying code.
+description: Analyze requirements and propose changes before coding; after user confirmation, complete implementation and testing within the approved scope without repeated approval. Use when investigating, writing, reviewing, testing, committing, pushing, or deploying code.
 metadata:
   short-description: User's development workflow
 ---
@@ -11,13 +11,13 @@ Use this workflow together with the user's current coding skills. Do not repeat 
 
 ## Required confirmation before code changes
 
-Before each code-writing or modification phase, first inspect relevant context without changing project files, then present a concrete proposed change and wait for the user's explicit confirmation. This applies to new code, tests, scripts, configuration, tiny fixes, and each new module or additional modification batch.
+Before starting a code-writing or modification task, first inspect relevant context without changing project files, then present a concrete proposed change and wait for the user's explicit confirmation. This applies to new code, tests, scripts, configuration, and tiny fixes. Confirmation is scoped to the presented solution, which may include multiple modules and their verification.
 
 The proposal must explain the problem or requirement, affected files or modules, how the implementation will change, expected behavior, and the verification approach. Include material risks and a rollback approach when relevant. Keep small-change proposals brief; task simplicity never removes the confirmation requirement.
 
 Questions such as `需要进行修改吗`, `是否需要修改`, `要怎么改`, and `排查一下` authorize analysis and a proposed solution only. Even an initial request to fix or implement something requires presenting the concrete plan first; it is not confirmation of a plan the user has not seen. Confirmation means an affirmative response to the presented plan, such as `按这个方案修改`, `确认，开始改`, or `可以，执行`.
 
-After confirmation, implement and verify the approved batch without asking for every individual edit. If scope or approach changes, a new fix is needed, or the next module requires more code changes, present that next change and wait for confirmation again. Overall requirements or implementation-order confirmation alone does not authorize all later modification phases. Reasonable default assumptions may support analysis but cannot bypass this gate.
+After confirmation, complete all implementation, module checks, testing, and fixes needed to satisfy the approved solution without asking again for each file, module, edit, or test failure. Continue until the approved scope is complete and verified, or a concrete blocker prevents progress. Routine implementation adjustments and fixing issues found by tests within that scope are already authorized. Ask again only for work outside the approved scope, a material change to the agreed solution, a new critical decision, or an action requiring separate authorization under the user's dependency, production, destructive-operation, or deployment rules. Confirmation of requirements alone is not approval of an implementation plan the user has not seen. Reasonable default assumptions may support analysis but cannot bypass the initial gate.
 
 ## 1. Classify the task
 
@@ -38,7 +38,7 @@ Before coding:
 - For non-blocking details, use a reasonable default and state the assumption.
 - Stop and ask when an assumption could change architecture, data, permissions, security, cost, or externally visible behavior.
 
-After requirements are sufficiently clear, present the implementation order for confirmation. Before coding each module, present its concrete change proposal and obtain confirmation under the gate above. A module proposal and overall plan may be confirmed together when both are concrete and visible to the user.
+After requirements are sufficiently clear, present the solution, implementation order, and verification approach for confirmation. Once confirmed, proceed through all modules in that plan automatically; report progress without treating module boundaries as approval gates.
 
 ## 3. Investigation requests
 
@@ -82,7 +82,7 @@ For each module, record or communicate:
 - Completion criteria.
 - Verification command or observable check.
 
-Implement one independently verifiable module at a time after its change proposal is confirmed. After a module passes its relevant check, report the result and present the next module's change proposal; wait for confirmation before writing its code. Use targeted checks by default; run the full test suite when the change scope or risk justifies it. If checks fail and further code changes are required, explain the findings and proposed fix and obtain confirmation before applying that fix.
+Implement one independently verifiable module at a time within the confirmed plan. After a module passes its relevant check, continue to the next module automatically. Use targeted checks by default; run the full test suite when the change scope or risk justifies it. If checks fail, investigate, fix issues within the approved scope, and rerun the relevant checks without requesting confirmation again. Pause only at the authorization boundaries defined above.
 
 Keep changes surgical. Do not refactor unrelated code, comments, formatting, or files. Remove only unused items created by the current change.
 
