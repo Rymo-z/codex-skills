@@ -1,6 +1,6 @@
 ---
 name: personal-workflow
-description: Apply the user's risk-aware workflow for requirements analysis, modular implementation, technology selection, verification, and Git delivery. Use when writing, reviewing, testing, committing, pushing, or deploying code.
+description: Analyze requirements and propose changes for the user's development workflow; obtain confirmation before every code modification phase, including small fixes. Use when investigating, writing, reviewing, testing, committing, pushing, or deploying code.
 metadata:
   short-description: User's development workflow
 ---
@@ -9,11 +9,21 @@ metadata:
 
 Use this workflow together with the user's current coding skills. Do not repeat rules that are already covered by `karpathy-guidelines` or `engineering-constraints`; apply this skill to coordinate the work.
 
+## Required confirmation before code changes
+
+Before each code-writing or modification phase, first inspect relevant context without changing project files, then present a concrete proposed change and wait for the user's explicit confirmation. This applies to new code, tests, scripts, configuration, tiny fixes, and each new module or additional modification batch.
+
+The proposal must explain the problem or requirement, affected files or modules, how the implementation will change, expected behavior, and the verification approach. Include material risks and a rollback approach when relevant. Keep small-change proposals brief; task simplicity never removes the confirmation requirement.
+
+Questions such as `需要进行修改吗`, `是否需要修改`, `要怎么改`, and `排查一下` authorize analysis and a proposed solution only. Even an initial request to fix or implement something requires presenting the concrete plan first; it is not confirmation of a plan the user has not seen. Confirmation means an affirmative response to the presented plan, such as `按这个方案修改`, `确认，开始改`, or `可以，执行`.
+
+After confirmation, implement and verify the approved batch without asking for every individual edit. If scope or approach changes, a new fix is needed, or the next module requires more code changes, present that next change and wait for confirmation again. Overall requirements or implementation-order confirmation alone does not authorize all later modification phases. Reasonable default assumptions may support analysis but cannot bypass this gate.
+
 ## 1. Classify the task
 
 Choose the lightest process that still controls the risk:
 
-- For a trivial change, state only the necessary assumption, make the small change, and run the smallest relevant check.
+- For a trivial change, give a brief change proposal, wait for confirmation, then make the small change and run the smallest relevant check.
 - For a medium or complex change, analyze the requirements, propose the implementation order, and define module-level completion criteria before coding.
 - For changes involving architecture, data, permissions, security, cost, external behavior, production, or destructive operations, treat unresolved decisions as blocking.
 
@@ -28,7 +38,7 @@ Before coding:
 - For non-blocking details, use a reasonable default and state the assumption.
 - Stop and ask when an assumption could change architecture, data, permissions, security, cost, or externally visible behavior.
 
-After requirements are sufficiently clear, present the implementation order and wait for confirmation of the overall plan before starting medium or complex work. Continue through modules automatically after that confirmation unless a new blocker or material risk appears.
+After requirements are sufficiently clear, present the implementation order for confirmation. Before coding each module, present its concrete change proposal and obtain confirmation under the gate above. A module proposal and overall plan may be confirmed together when both are concrete and visible to the user.
 
 ## 3. Investigation requests
 
@@ -42,7 +52,7 @@ The investigation should report:
 - One or more feasible solutions, with trade-offs and a recommended next step.
 - Any missing information or user decision required before implementation.
 
-Only make changes after the user explicitly asks to implement, fix, or apply a selected solution. If a read-only check itself would mutate state, pause and ask before running it.
+Only make changes after presenting the specific solution and receiving explicit confirmation to apply it. If a proposed investigation check would mutate state, identify its side effects and ask before running it.
 
 ## 4. Select the technical approach
 
@@ -72,7 +82,7 @@ For each module, record or communicate:
 - Completion criteria.
 - Verification command or observable check.
 
-Implement one independently verifiable module at a time. After a module passes its relevant check, continue to the next module. Use targeted checks by default; run the full test suite when the change scope or risk justifies it.
+Implement one independently verifiable module at a time after its change proposal is confirmed. After a module passes its relevant check, report the result and present the next module's change proposal; wait for confirmation before writing its code. Use targeted checks by default; run the full test suite when the change scope or risk justifies it. If checks fail and further code changes are required, explain the findings and proposed fix and obtain confirmation before applying that fix.
 
 Keep changes surgical. Do not refactor unrelated code, comments, formatting, or files. Remove only unused items created by the current change.
 
