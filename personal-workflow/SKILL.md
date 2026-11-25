@@ -1,6 +1,6 @@
 ---
 name: personal-workflow
-description: Analyze requirements and propose changes before coding; after user confirmation, complete implementation and testing within the approved scope without repeated approval. Use when investigating, writing, reviewing, testing, committing, pushing, or deploying code.
+description: Investigate and propose a solution first; after confirmation, finish repair and testing without repeated approval. Treat Git delivery and deployment as separately authorized stages. Use for software investigation, development, verification, and delivery.
 metadata:
   short-description: User's development workflow
 ---
@@ -17,7 +17,11 @@ The proposal must explain the problem or requirement, affected files or modules,
 
 Questions such as `需要进行修改吗`, `是否需要修改`, `要怎么改`, and `排查一下` authorize analysis and a proposed solution only. Even an initial request to fix or implement something requires presenting the concrete plan first; it is not confirmation of a plan the user has not seen. Confirmation means an affirmative response to the presented plan, such as `按这个方案修改`, `确认，开始改`, or `可以，执行`.
 
-After confirmation, complete all implementation, module checks, testing, and fixes needed to satisfy the approved solution without asking again for each file, module, edit, or test failure. Continue until the approved scope is complete and verified, or a concrete blocker prevents progress. Routine implementation adjustments and fixing issues found by tests within that scope are already authorized. Deployment covered by the task goal, confirmed plan, or an established project delivery workflow is also authorized under section 9; do not add another approval gate for it. Ask again only for work outside the approved scope, a material change to the agreed solution, a new critical decision, or an action requiring separate authorization under the user's dependency or destructive-operation rules. Confirmation of requirements alone is not approval of an implementation plan the user has not seen. Reasonable default assumptions may support analysis but cannot bypass the initial gate.
+Use these stage boundaries: investigate the error, present the solution and wait; once the user confirms the solution, repair and test continuously until the approved fix is verified, then report completion. Do not stop after writing code and ask whether to test. Do not ask whether to continue after each module, test failure, or repair attempt. Testing, diagnosing failures, correcting the fix, and rerunning relevant checks are part of the same approved repair stage. Progress updates are informational and do not require a reply.
+
+Make routine implementation choices and use reasonable non-blocking defaults within the approved solution. Pause only for a concrete blocker the user must resolve, a material change outside the approved scope, or an action subject to an unmet separate authorization rule. Do not turn ordinary uncertainty or test failures into new approval requests. Explain a real blocker with evidence and bundle the necessary questions. Resume the same approved stage when it is resolved instead of restarting approval.
+
+Completion of repair and testing is the end of that stage. Git publication, deployment, and rollback are separate stages: do not infer their authorization from approval of a repair. If the user has explicitly approved multiple stages, proceed through those stages without repeated approval; otherwise report the repair and test results and stop. A stage does not need a special trigger phrase such as `上线`; an ordinary instruction approving that stage is sufficient.
 
 ## 1. Classify the task
 
@@ -25,7 +29,7 @@ Choose the lightest process that still controls the risk:
 
 - For a trivial change, give a brief change proposal, wait for confirmation, then make the small change and run the smallest relevant check.
 - For a medium or complex change, analyze the requirements, propose the implementation order, and define module-level completion criteria before coding.
-- For changes involving architecture, data, permissions, security, cost, external behavior, production, or destructive operations, treat unresolved decisions as blocking.
+- Treat genuinely unresolved requirements or decisions affecting architecture, data, permissions, security, cost, external behavior, production, or destructive operations as blocking when a safe choice cannot be made within the approved scope. Routine implementation choices are not blocking decisions.
 
 Do not create artificial modules for tiny changes. Split work when modules have independent goals, dependencies, or verification steps.
 
@@ -70,7 +74,7 @@ Search external sources only when the project does not already provide a suitabl
 - Its cost, maintenance, licensing, dependency, and migration considerations.
 - Why the rejected alternatives were less suitable.
 
-Do not automatically install a missing dependency. First identify the missing item, its impact, and the exact proposed command, then ask the user.
+Do not install a missing dependency without authorization. Identify the item, impact, and exact command and ask once if installation has not already been approved. An installation explicitly included in the confirmed plan does not need another confirmation.
 
 ## 5. Implement module by module
 
@@ -114,6 +118,8 @@ When pausing, state what is missing, why it is needed, what has already been che
 
 ## 8. Git delivery
 
+Repair approval alone does not authorize committing or pushing. When Git delivery has been requested or explicitly approved, complete its agreed sequence without asking separately for each Git command.
+
 Use a symbolic base branch rather than a repository-specific name:
 
 ```text
@@ -148,7 +154,7 @@ Report every conflict file, the reason for the chosen resolution, and any remain
 
 ## 9. Deployment and completion
 
-Do not require the user to repeat `上线`, `部署`, or another special phrase. When deployment is covered by the task goal, the confirmed solution, or an established project delivery workflow, complete the implementation and relevant checks, then continue directly to deployment and post-deployment verification. This applies to the agreed target environment, including production when it is already covered by that authorization. Do not ask for an additional confirmation merely because the workflow has reached the deployment step.
+Deployment is a separate stage from repair and testing. A confirmed repair plan, an existing deployment runbook, or a project's usual delivery workflow does not alone authorize deployment. After repair and tests finish, report completion and stop unless the user has also explicitly requested or approved deployment. If the user has already approved deployment to a defined target, execute the full deployment and post-deployment verification sequence without asking again or requiring the literal phrase `上线`. This also applies to an explicitly authorized production target.
 
 Before deployment, verify the target, prerequisites, release version, health-check criteria, and rollback approach using the project's existing runbook. After deployment, check health and the relevant behavior and report the actual result. Pause only for missing credentials or configuration, an unclear target, failed prerequisite checks, a new material risk or critical decision, work outside the agreed scope, or a separately restricted destructive action. A read-only investigation remains read-only. Do not infer an arbitrary deployment destination from a coding request when neither the task nor the established workflow defines one. Online rollback still requires its own authorization unless it was explicitly included in the approved rollback plan.
 

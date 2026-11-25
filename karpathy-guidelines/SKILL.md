@@ -15,10 +15,10 @@ Behavioral guidelines to reduce common LLM coding mistakes, derived from [Andrej
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
 
 Before implementing:
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
+- State non-blocking assumptions explicitly and continue within the approved scope. Ask only when a consequential ambiguity cannot be resolved from available context.
+- If multiple interpretations materially change the requested result, present them before implementation; routine implementation choices do not need user decisions.
 - If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+- Stop for concrete blockers or work outside the approved scope, not ordinary uncertainty. After a repair solution is confirmed, complete the repair, tests, necessary corrections, and retests continuously; keep Git publication and deployment separately authorized.
 
 ## 2. Simplicity First
 
