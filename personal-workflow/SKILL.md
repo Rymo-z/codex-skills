@@ -152,6 +152,28 @@ Do not require the user to repeat `上线`, `部署`, or another special phrase.
 
 Before deployment, verify the target, prerequisites, release version, health-check criteria, and rollback approach using the project's existing runbook. After deployment, check health and the relevant behavior and report the actual result. Pause only for missing credentials or configuration, an unclear target, failed prerequisite checks, a new material risk or critical decision, work outside the agreed scope, or a separately restricted destructive action. A read-only investigation remains read-only. Do not infer an arbitrary deployment destination from a coding request when neither the task nor the established workflow defines one. Online rollback still requires its own authorization unless it was explicitly included in the approved rollback plan.
 
+### Pull locally before every deployment
+
+Before every code deployment, including a rollback deployment, pull the agreed remote deployment branch into a local checkout. Determine that branch from the project's release configuration or the approved plan; do not assume it is `BASE_BRANCH`, the current feature branch, or `main`.
+
+1. Inspect the local branch, working tree, and remote tracking state. Preserve unrelated or uncommitted changes; use a clean checkout when appropriate rather than overwriting them.
+2. Fetch and pull the agreed remote deployment branch into the matching local branch. Prefer a fast-forward-only pull for a clean deployment checkout. If the checkout diverges, resolve that state under the Git delivery rules before continuing; do not deploy while synchronization is unresolved.
+3. Record the exact synchronized commit SHA. If local fixes or merge commits are needed, validate and push them to the agreed remote branch first, then pull again. Do not deploy uncommitted or local-only code.
+4. Run the relevant checks on that exact revision, then build and deploy that revision or its traceable artifact through the project's deployment mechanism. Ensure a server or CI job uses the same revision rather than an unrelated checkout.
+5. Verify post-deployment health and report the remote branch, source commit, commands, and actual results.
+
+If pulling, synchronization, or required checks fail, stop before deployment. A stale local copy does not satisfy this requirement.
+
+### Commit and push rollback code before deployment
+
+For an authorized code rollback, first synchronize the agreed deployment branch, identify the known-good state, and create a reviewable rollback change. Prefer `git revert` or a scoped restoration committed as a new commit so remote history is preserved; never force-push or rewrite shared history to roll back.
+
+Validate the rollback change, commit it, and successfully push it to the agreed remote deployment branch before invoking deployment. Verify that the remote contains the rollback commit, then pull that branch into the local deployment checkout and follow the deployment sequence above. If the push is rejected or fails, resolve synchronization and push successfully before deploying. Never deploy rollback code only present locally or on the server.
+
+If pushing automatically triggers deployment, inspect that workflow beforehand and ensure the rollback change is validated before pushing and the job pulls or checks out the pushed rollback revision before building and deploying. Do not launch a duplicate manual deployment.
+
+This code rollback sequence does not authorize database restoration or destructive data changes; handle those under the existing data and authorization rules.
+
 At completion, report:
 
 - Changed files and the purpose of each change.
