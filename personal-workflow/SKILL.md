@@ -156,6 +156,14 @@ Report every conflict file, the reason for the chosen resolution, and any remain
 
 Deployment is a separate stage from repair and testing. A confirmed repair plan, an existing deployment runbook, or a project's usual delivery workflow does not alone authorize deployment. After repair and tests finish, report completion and stop unless the user has also explicitly requested or approved deployment. If the user has already approved deployment to a defined target, execute the full deployment and post-deployment verification sequence without asking again or requiring the literal phrase `上线`. This also applies to an explicitly authorized production target.
 
+### Reuse passed tests when deployment is confirmed
+
+When the repair has passed its relevant tests and the user says `确认部署` or otherwise approves deployment, proceed directly with synchronization, the necessary build or artifact selection, deployment, and a lightweight health check. Reuse the recorded test results for the tested revision. Do not restart analysis, rerun unit/integration/regression suites, repeat linting or type checks that already passed, or ask for another confirmation simply because the stage changed to deployment.
+
+Pull the remote code as required below, then compare the deployment inputs with the already tested revision. Only repeat affected checks when code, dependencies, or relevant configuration changed, or concrete new evidence invalidates the previous results. A pull, a new checkout, a packaging step, or passage of time alone is not a reason to rerun tests. Explain any specific invalidating change briefly and run only the necessary affected checks; do not automatically restart the full suite.
+
+Prefer an existing matching artifact or a supported build-only command to avoid redundant testing. Do not change required CI checks, invent skip flags, or modify pipeline policy to bypass them; when CI already runs required checks, use its result rather than starting another duplicate local run. Post-deployment verification is limited to service startup, health/readiness, and the essential deployed endpoint or version check; it is not another full test campaign.
+
 Before deployment, verify the target, prerequisites, release version, health-check criteria, and rollback approach using the project's existing runbook. After deployment, check health and the relevant behavior and report the actual result. Pause only for missing credentials or configuration, an unclear target, failed prerequisite checks, a new material risk or critical decision, work outside the agreed scope, or a separately restricted destructive action. A read-only investigation remains read-only. Do not infer an arbitrary deployment destination from a coding request when neither the task nor the established workflow defines one. Online rollback still requires its own authorization unless it was explicitly included in the approved rollback plan.
 
 ### Pull locally before every deployment
@@ -165,7 +173,7 @@ Before every code deployment, including a rollback deployment, pull the agreed r
 1. Inspect the local branch, working tree, and remote tracking state. Preserve unrelated or uncommitted changes; use a clean checkout when appropriate rather than overwriting them.
 2. Fetch and pull the agreed remote deployment branch into the matching local branch. Prefer a fast-forward-only pull for a clean deployment checkout. If the checkout diverges, resolve that state under the Git delivery rules before continuing; do not deploy while synchronization is unresolved.
 3. Record the exact synchronized commit SHA. If local fixes or merge commits are needed, validate and push them to the agreed remote branch first, then pull again. Do not deploy uncommitted or local-only code.
-4. Run the relevant checks on that exact revision, then build and deploy that revision or its traceable artifact through the project's deployment mechanism. Ensure a server or CI job uses the same revision rather than an unrelated checkout.
+4. Reuse the existing passed checks when they cover this revision; only run affected checks if the deployment inputs changed or new evidence invalidates those results. Then build and deploy that revision or its traceable artifact through the project's deployment mechanism. Ensure a server or CI job uses the same revision rather than an unrelated checkout.
 5. Verify post-deployment health and report the remote branch, source commit, commands, and actual results.
 
 If pulling, synchronization, or required checks fail, stop before deployment. A stale local copy does not satisfy this requirement.
